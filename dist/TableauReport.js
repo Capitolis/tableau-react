@@ -171,13 +171,12 @@ var TableauReport = function (_React$Component) {
   }, {
     key: 'getActiveSheet',
     value: function getActiveSheet() {
+      if (!this.workbook) return null;
       var sheet = this.workbook.getActiveSheet();
 
-      // If child sheets exist, choose them.
       var hasChildSheets = typeof sheet.getWorksheets !== 'undefined';
       if (hasChildSheets) {
         var childSheets = sheet.getWorksheets();
-
         if (childSheets && childSheets.length) {
           sheet = childSheets[0];
         }
@@ -204,9 +203,7 @@ var TableauReport = function (_React$Component) {
 
       var sheet = this.getActiveSheet();
 
-      if (!sheet) {
-        return;
-      }
+      if (!sheet) return;
       for (var key in filters) {
         if (!this.state.filters.hasOwnProperty(key) || !this.compareArrays(this.state.filters[key], filters[key])) {
           promises.push(sheet.applyFilterAsync(key, filters[key], REPLACE));
