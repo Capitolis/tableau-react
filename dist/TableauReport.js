@@ -168,6 +168,22 @@ var TableauReport = function (_React$Component) {
     value: function invalidateToken() {
       this.setState({ didInvalidateToken: true });
     }
+  }, {
+    key: 'getActiveSheet',
+    value: function getActiveSheet() {
+      var sheet = this.workbook.getActiveSheet();
+
+      // If child sheets exist, choose them.
+      var hasChildSheets = typeof sheet.getWorksheets !== 'undefined';
+      if (hasChildSheets) {
+        var childSheets = sheet.getWorksheets();
+
+        if (childSheets && childSheets.length) {
+          sheet = childSheets[0];
+        }
+      }
+      return sheet;
+    }
 
     /**
      * Asynchronously applies filters to the worksheet, excluding those that have
@@ -186,9 +202,14 @@ var TableauReport = function (_React$Component) {
 
       this.setState({ loading: true });
 
+      var sheet = this.getActiveSheet();
+
+      if (!sheet) {
+        return;
+      }
       for (var key in filters) {
         if (!this.state.filters.hasOwnProperty(key) || !this.compareArrays(this.state.filters[key], filters[key])) {
-          promises.push(this.sheet.applyFilterAsync(key, filters[key], REPLACE));
+          promises.push(sheet.applyFilterAsync(key, filters[key], REPLACE));
         }
       }
 
@@ -237,17 +258,6 @@ var TableauReport = function (_React$Component) {
       var options = _extends({}, filters, parameters, this.props.options, {
         onFirstInteractive: function onFirstInteractive() {
           _this4.workbook = _this4.viz.getWorkbook();
-          _this4.sheet = _this4.workbook.getActiveSheet();
-
-          // If child sheets exist, choose them.
-          var hasChildSheets = typeof _this4.sheet.getWorksheets !== 'undefined';
-          if (hasChildSheets) {
-            var childSheets = _this4.sheet.getWorksheets();
-
-            if (childSheets && childSheets.length) {
-              _this4.sheet = childSheets[0];
-            }
-          }
 
           _this4.props.onLoad && _this4.props.onLoad(new Date());
         }

@@ -1,0 +1,9 @@
+@bit:registry=https://node.bit.dev
+//node.bit.dev/:_authToken=3e52c640-ef0f-47c0-9476-346dad308e41
+registry=http://nexus.capitolis.com:8081/repository/cptls-npm-group
+init.author.name=Capitolis
+init.author.email=deployer@capitolis.com
+init.author.url=
+email=deployer@capitolis.com
+always-auth=true
+_auth=${NEXUS_AUTH}

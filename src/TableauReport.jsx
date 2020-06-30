@@ -108,6 +108,21 @@ class TableauReport extends React.Component {
     this.setState({ didInvalidateToken: true });
   }
 
+  getActiveSheet() {
+          let sheet = this.workbook.getActiveSheet();
+
+        // If child sheets exist, choose them.
+        const hasChildSheets = typeof sheet.getWorksheets !== 'undefined';
+        if (hasChildSheets) {
+          const childSheets = sheet.getWorksheets();
+
+          if (childSheets && childSheets.length) {
+            sheet = childSheets[0];
+          }
+        }
+        return sheet;
+  }
+
   /**
    * Asynchronously applies filters to the worksheet, excluding those that have
    * already been applied, which is determined by checking against state.
@@ -120,13 +135,18 @@ class TableauReport extends React.Component {
 
     this.setState({ loading: true });
 
+    const sheet = this.getActiveSheet();
+
+    if (!sheet) {
+     return;
+    }
     for (const key in filters) {
       if (
         !this.state.filters.hasOwnProperty(key) ||
         !this.compareArrays(this.state.filters[key], filters[key])
       ) {
         promises.push(
-          this.sheet.applyFilterAsync(key, filters[key], REPLACE)
+          sheet.applyFilterAsync(key, filters[key], REPLACE)
         );
       }
     }
@@ -167,17 +187,6 @@ class TableauReport extends React.Component {
       ...this.props.options,
       onFirstInteractive: () => {
         this.workbook = this.viz.getWorkbook();
-        this.sheet = this.workbook.getActiveSheet();
-
-        // If child sheets exist, choose them.
-        const hasChildSheets = typeof this.sheet.getWorksheets !== 'undefined';
-        if (hasChildSheets) {
-          const childSheets = this.sheet.getWorksheets();
-
-          if (childSheets && childSheets.length) {
-            this.sheet = childSheets[0];
-          }
-        }
 
         this.props.onLoad && this.props.onLoad(new Date());
       }
