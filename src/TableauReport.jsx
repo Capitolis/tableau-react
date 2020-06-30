@@ -109,18 +109,17 @@ class TableauReport extends React.Component {
   }
 
   getActiveSheet() {
-          let sheet = this.workbook.getActiveSheet();
+    if (!this.workbook) return null;
+    let sheet = this.workbook.getActiveSheet();
 
-        // If child sheets exist, choose them.
-        const hasChildSheets = typeof sheet.getWorksheets !== 'undefined';
-        if (hasChildSheets) {
-          const childSheets = sheet.getWorksheets();
-
-          if (childSheets && childSheets.length) {
-            sheet = childSheets[0];
-          }
-        }
-        return sheet;
+    const hasChildSheets = typeof sheet.getWorksheets !== 'undefined';
+    if (hasChildSheets) {
+      const childSheets = sheet.getWorksheets();
+      if (childSheets && childSheets.length) {
+        sheet = childSheets[0];
+      }
+    }
+    return sheet;
   }
 
   /**
@@ -137,9 +136,7 @@ class TableauReport extends React.Component {
 
     const sheet = this.getActiveSheet();
 
-    if (!sheet) {
-     return;
-    }
+    if (!sheet) return;
     for (const key in filters) {
       if (
         !this.state.filters.hasOwnProperty(key) ||
