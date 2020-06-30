@@ -1,6 +1,6 @@
 {
   "name": "tableau-react",
-  "version": "1.2.2",
+  "version": "1.2.2-roi3",
   "description": "React component for rendering tableau reports using tableau javascript API.",
   "main": "dist/index.js",
   "files": [
@@ -10,6 +10,9 @@
     "test": "mocha test/.setup.js test/**/*-test.js",
     "build": "rimraf dist/ && babel src/ --out-dir dist",
     "prepublish": "npm run build"
+  },
+  "publishConfig": {
+    "registry": "http://nexus.capitolis.com:8081/repository/cptls-npm/"
   },
   "repository": {
     "type": "git",
