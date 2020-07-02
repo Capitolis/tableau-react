@@ -14,6 +14,8 @@ const propTypes = {
   token: PropTypes.string,
   onLoad: PropTypes.func,
   query: PropTypes.string,
+  onLoadingStart: PropTypes.func,
+  onLoadingEnd: PropTypes.func,
 };
 
 const defaultProps = {
@@ -21,7 +23,9 @@ const defaultProps = {
   parameters: {},
   filters: {},
   options: {},
-  query: '?:embed=yes&:comments=no&:toolbar=yes&:refresh=yes'
+  query: '?:embed=yes&:comments=no&:toolbar=yes&:refresh=yes',
+  onLoadingStart: () => null,
+  onLoadingEnd: () => null,
 };
 
 class TableauReport extends React.Component {
@@ -133,6 +137,7 @@ class TableauReport extends React.Component {
     const promises = [];
 
     this.setState({ loading: true });
+    this.props.onLoadingStart();
 
     const sheet = this.getActiveSheet();
 
@@ -148,7 +153,10 @@ class TableauReport extends React.Component {
       }
     }
 
-    this.onComplete(promises, () => this.setState({ loading: false, filters }));
+    this.onComplete(promises, () => {
+      this.setState({ loading: false, filters })
+      this.props.onLoadingEnd();
+    });
   }
 
   applyParameters(parameters) {

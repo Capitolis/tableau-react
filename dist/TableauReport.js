@@ -49,7 +49,9 @@ var propTypes = {
   options: _propTypes2.default.object,
   token: _propTypes2.default.string,
   onLoad: _propTypes2.default.func,
-  query: _propTypes2.default.string
+  query: _propTypes2.default.string,
+  onLoadingStart: _propTypes2.default.func,
+  onLoadingEnd: _propTypes2.default.func
 };
 
 var defaultProps = {
@@ -57,7 +59,13 @@ var defaultProps = {
   parameters: {},
   filters: {},
   options: {},
-  query: '?:embed=yes&:comments=no&:toolbar=yes&:refresh=yes'
+  query: '?:embed=yes&:comments=no&:toolbar=yes&:refresh=yes',
+  onLoadingStart: function onLoadingStart() {
+    return null;
+  },
+  onLoadingEnd: function onLoadingEnd() {
+    return null;
+  }
 };
 
 var TableauReport = function (_React$Component) {
@@ -200,6 +208,7 @@ var TableauReport = function (_React$Component) {
       var promises = [];
 
       this.setState({ loading: true });
+      this.props.onLoadingStart();
 
       var sheet = this.getActiveSheet();
 
@@ -211,7 +220,8 @@ var TableauReport = function (_React$Component) {
       }
 
       this.onComplete(promises, function () {
-        return _this2.setState({ loading: false, filters: filters });
+        _this2.setState({ loading: false, filters: filters });
+        _this2.props.onLoadingEnd();
       });
     }
   }, {
@@ -232,7 +242,8 @@ var TableauReport = function (_React$Component) {
       }
 
       this.onComplete(promises, function () {
-        return _this3.setState({ loading: false, parameters: parameters });
+        _this3.setState({ loading: false, parameters: parameters });
+        _this3.props.onLoadingEnd();
       });
     }
 
